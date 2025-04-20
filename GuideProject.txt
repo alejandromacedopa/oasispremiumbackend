@@ -1,0 +1,69 @@
+Configuramos el archivo main.ts para que el servidor se ejecute en el puerto 3000, junto
+a una secuencia de reglas.
+
+En el archivo app.module.ts principal , configuramos el módulo principal de la aplicación, agregando todos los demas modulos
+que se van a utilizar en la aplicación, asi mismo configuramos la conexión para la base de datos y para poder hacer eso, usamos:
+
+-> npm install @nestjs/typeorm typeorm mysql2
+
+TENIENDO ESTA ARQUITECTURA
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'admin',
+      database: 'delivery2',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    // aqui insertamos los modulos que usaremos
+    UsersModule,
+    AuthModule,
+    RolesModule,
+    CategoriesModule,
+    ProductsModule,
+    AddressModule,
+    MercadoPagoModule,
+    OrdersModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+
+una vez configurado el módulo principal, podemos crear los modulos a usar
+comando:
+ -> nest g mo [nombre del modulo]
+si no tienes activdo la ejecución de scripts en tu maquina te saldra error, para eso 
+ejecuta npx antes del comando, ejemplo:
+ -> npx nest g mo [nombre del modulo]
+
+dentro de cada modulo, para tener una mejor organización, de los datos o types-data se crea la carpeta
+dto, dentro se define la estructura de datos de como se enviara y como se recibira la información, ejemplo:
+
+export class  CreateUserDto{
+    name: string;
+    email: string;
+    password: string;
+    username: string;
+}
+y se agrega "?" si el dato no es obligatorio, ejemplo:
+export class  CreateUserDto{
+    name: string;
+    email: string;
+    password: string;
+    username?: string;
+}
+
+## ENCRYPTACIÓN DE DATOS
+Para la encriptación de datos se utiliza la librería `bcrypt` que es una lib la cual 
+nos permitiria proteger los datos del cliente para eso intalamos con el comando:
+-> npm install bcrypt
+y llamamos asignamos un nombre, ejemplo:
+
+import { hash } from 'bcrypt';
+
+## para corregir el error de espacios mostrados por slintrc ejecutar:
+npx prettier --write .
